@@ -1,6 +1,9 @@
 import os
 from PIL import Image
 from pylab import *
+import csv
+from path import path
+
 
 all_images = {}
 image_roots = [
@@ -68,16 +71,37 @@ image_roots = [
         "name": "PH2Dataset",
         "path": "PH2Dataset/PH2 Dataset images",
         "include_endswith": ".bmp",
-        "exclude_contains": "_"},
+        "exclude_contains": "_",
+        "data_file": "PH2Dataset/PH2_dataset.txt",
+    },
+
 ]
 
 
+class ImageProcessResults():
+
+    def __init__(self, shape):
+        self.shape = shape
+        self.size_index_threshold_log = []
+
+    def log_index_threshold(self, size_index, threshold, center_region_touches_edge=False):
+        self.size_index_threshold_log.append({
+            'size_index': size_index,
+            'threshold': threshold,
+            'touches_edge': center_region_touches_edge
+        })
+
+
+
 class ImageItem():
-    def __init__(self, source, path, mask=None, category=None):
+    def __init__(self, source, path, mask=None, category=None, extra_data=None):
         self.source = source
         self.path = path
         self.mask = mask
         self.category = category
+        self.name = path.split("/")[-1]
+        self.extra_data = extra_data
+        self.process_results = {}
 
     def get_image_data(self):
         if self.source == "DermQuest":
@@ -87,6 +111,9 @@ class ImageItem():
 
     def __str__(self):
         return self.path
+
+    def set_process_results(self, process_results):
+        self.process_results = process_results
 
 
 class Images():
@@ -184,9 +211,65 @@ class Images():
                                     self.sources['DermQuest']['Categories'][category_name].append(image)
                                     image.category = category_name
 
+            if source['name'] == "PH2Dataset":
+
+                if not 'PH2Dataset' in self.sources:
+                    self.sources['PH2Dataset'] = {}
+                    self.sources['PH2Dataset']['Images'] = []
+                    self.sources['PH2Dataset']['Categories'] = {}
+
+                with open(path(source["data_file"])) as csvfile:
+                    spamreader = csv.DictReader(csvfile, delimiter='|')
+                    for row in spamreader:
+
+                        if row.get('   Name ', False):
+                            ph2Data = PH2Data(row)
+                            image_file = 'PH2Dataset/PH2 Dataset images/{0}/{0}_Dermoscopic_Image/{0}.bmp'.format(ph2Data.name)
+                            mask_file = 'PH2Dataset/PH2 Dataset images/{0}/{0}_lesion/{0}_lesion.bmp'.format(ph2Data.name)
+
+                            image = ImageItem('PH2Dataset', image_file, mask_file, extra_data=ph2Data)
+
+                            if ph2Data.clinical_diagnosis == '0':
+
+                                image.category = "Melanocytic Nevus"
+
+                            elif ph2Data.clinical_diagnosis == '1':
+
+                                image.category = "Melanocytic Nevus"
+
+                            else:
+
+                                image.category = "Malignant Melanoma"
+
+                            if not image.category in self.categories:
+                                self.categories[image.category] = []
+                            if not image.category in self.sources['PH2Dataset']['Categories']:
+                                self.sources['PH2Dataset']['Categories'][image.category] = []
+
+                            self.categories[image.category].append(image)
+                            self.sources['PH2Dataset']['Categories'][image.category].append(image)
+                            self.sources['PH2Dataset']['Images'].append(image)
+                            self.images.append(image)
 
 
 # gather all images in all_image_root and store them in all_images
+class PH2Data():
+
+    name = ''
+
+    def __init__(self, data):
+
+        self.name = data.get('   Name ', '').strip()
+        self.colors = data.get('           Colors ', '').strip().split(' ')
+        self.asymmetry = data.get(' Asymmetry ', '').strip()
+        self.blue_whitish_veil = data.get(' Blue-Whitish Veil ', '').strip()
+        self.clinical_diagnosis = data.get(' Clinical Diagnosis ', '').strip()
+        self.dots_globules = data.get(' Dots/Globules ', '').strip()
+        self.histological_diagnosis = data.get(' Histological Diagnosis ', '').strip()
+        self.pigment_network = data.get(' Pigment Network ', '').strip()
+        self.regression_areas = data.get(' Regression Areas ', '').strip()
+        self.streaks = data.get(' Streaks ', '').strip()
+
 
 
 def gather_images():
