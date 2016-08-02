@@ -1,0 +1,35 @@
+
+| {% load i18n menu_tags %}
+
+| {% if languages|length > 1 %}
+ul
+  | {% for language in languages %}
+
+  | {% ifequal current_language language.0 %}
+
+  li(class="{{language.0}}")
+    a(
+    href="{% page_language_url language.0 %}"
+    title="{% trans 'Change to language:' %} {{ language.0 }}"
+    class="lang{% ifequal current_language language.0 %} active{% endifequal %} {{ language.0 }}"
+    )
+      | {{ language.0 | upper }}
+  | {% endifequal %}
+  | {% endfor %}
+
+  | {% for language in languages %}
+
+  | {% ifnotequal current_language language.0 %}
+
+  li(class="{{language.0}}")
+    a(
+    href="{% page_language_url language.0 %}"
+    title="{% trans 'Change to language:' %} {{ language.0 }}"
+    class="lang{% ifequal current_language language.0 %} active{% endifequal %} {{ language.0 }}"
+    )
+      | {{ language.0 | upper }}
+
+  | {% endifnotequal %}
+
+  | {% endfor %}
+  | {% endif %}

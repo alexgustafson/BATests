@@ -1,0 +1,28 @@
+
+- load cms_tags sekizai_tags menu_tags i18n
+
+doctype html
+html(lang="{{ LANGUAGE_CODE }}")
+  head
+
+    title
+      - block pagetitle
+        - page_attribute "page_title"
+
+    - include  'partials/_head.jade'
+
+  body(ng-app="app" ng-controller="MainController")
+    | {% cms_toolbar %}
+
+    - include 'partials/_header.jade'
+
+    | {% block content %}
+    | {% endblock  %}
+
+
+    footer
+
+    - include 'partials/_scripts.jade'
+
+
+

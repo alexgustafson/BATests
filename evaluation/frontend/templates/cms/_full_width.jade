@@ -1,0 +1,11 @@
+
+- extends 'cms/_base.jade'
+
+- load cms_tags sekizai_tags menu_tags i18n
+
+- block pagetitle
+  - page_attribute "page_title"
+
+- block content
+  .container
+    - placeholder 'Main Content'

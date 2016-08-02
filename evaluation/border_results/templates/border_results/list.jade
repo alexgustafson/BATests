@@ -1,0 +1,60 @@
+- extends 'frontend/_base.jade'
+
+- load i18n
+
+- block pagetitle
+  | Title
+
+- block content
+  .header
+    h1 Preprocess Algorithm
+    h2 Evaluation Tool
+
+  .container()
+    .left()
+
+      .file-list
+
+        - verbatim
+          .file(
+          ng-click="selectFile($index)"
+          ng-repeat="logfile in allLogs"
+          ng-class="{'record-highlight': $index == focusIndex }"
+          tabindex="{{ $index }}"
+          )
+            {{ logfile.name }}
+
+    .right(ng-controller="LogController")
+      - verbatim
+        .form
+
+          .input-fields
+
+            label Is the region well isolated?
+            input(type="checkbox" name="isolated" value="true" ng-model="evaluation.region_isolate" checked="checked")
+            | Yes
+
+          .input-fields
+
+            label Border Quality:
+            select(
+            ng-model="evaluation.border_quality"
+            ng-options="selectedItem.id as selectedItem.name for selectedItem in border_quality_values"
+            )
+
+
+          button(ng-click="postEvaluation()") Submit
+        .images
+          .original
+            label Original Image:
+            img(ng-src="/static/{{ logData.path }}")
+          .boundary
+            label Border Image:
+            img(ng-src="/static/{{ logData.boundary_image }}")
+
+          .mask
+            label Source Mask:
+            img(ng-src="/static/{{ logData.mask }}")
+
+
+

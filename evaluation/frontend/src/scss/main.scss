@@ -1,0 +1,110 @@
+// bower:scss
+@import "../../static/frontend/vendor/susy/sass/_susy.scss";
+@import "../../static/frontend/vendor/sassy-maps/sass/_sassy-maps.scss";
+@import "../../static/frontend/vendor/breakpoint-sass/stylesheets/_breakpoint.scss";
+@import "../../static/frontend/vendor/open-iconic/font/css/open-iconic.scss";
+@import "../../static/frontend/vendor/concise/src/concise.scss";
+// endbower
+@import "globals";
+@import "partials/typo";
+@import "partials/header";
+
+body {
+
+}
+
+.content {
+  font-family: Helvetica, Sans-Serif;
+}
+
+.file-list {
+
+  .file {
+    padding: 1em;
+
+    &:hover {
+      background-color: rgba(59, 134, 134, 0.47);
+    }
+
+    &.active {
+      font-weight: 800;
+      background-color: #535d63;
+      color: white;
+    }
+
+    &.focus {
+      background-color: rgba(83, 93, 99, 0.56);
+    }
+  }
+}
+
+.left {
+  @include span(3 of 12);
+  overflow-y: scroll;
+  height: calc(100vh - 170px);
+}
+
+.right {
+  @include span(9 of 12 last);
+}
+
+.original {
+  @include span(8 of 12);
+}
+
+.boundary, .mask {
+  @include span(4 of 12 last);
+
+}
+
+
+.input-fields {
+  width: 25%;
+  padding-bottom: 1em;
+  display: inline-block;
+
+}
+
+button {
+  float: right;
+}
+
+.record-highlight {
+  background-color: #4e6354;
+  color: #fff;
+}
+
+.container {
+  padding: 2em;
+}
+
+.header {
+  background-color: white;
+  color: black;
+  vertical-align: bottom;
+  padding: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
+
+  h1 {
+    font-size: 2em;
+  }
+  h2 {
+    font-size: 1em;
+  }
+}
+
+.form {
+  background-color: #ececec;
+  padding: 0.4em;
+  margin-bottom: 1em;
+}
+
+label {
+  font-weight: 600;
+}
+
+.images {
+  overflow: hidden;
+  margin-top: 1em;
+}

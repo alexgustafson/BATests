@@ -1,0 +1,11 @@
+
+mixin menu-item(name, href, active)
+
+    li
+      a(href=href)
+        if active
+          .menu-item.active= name
+        else
+          .menu-item= name
+
+

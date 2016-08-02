@@ -3,7 +3,9 @@ from PIL import Image
 from pylab import *
 import csv
 from path import path
+from os.path import join
 
+import json
 
 all_images = {}
 image_roots = [
@@ -83,13 +85,32 @@ class ImageProcessResults():
     def __init__(self, shape):
         self.shape = shape
         self.size_index_threshold_log = []
+        self.crop_to_center_log = []
+        self.original_image = ""
+        self.boundary_image = ""
 
-    def log_index_threshold(self, size_index, threshold, center_region_touches_edge=False):
+    def log_index_threshold(self, size_index, threshold, center_region_touches_edge=False, path=""):
         self.size_index_threshold_log.append({
             'size_index': size_index,
             'threshold': threshold,
-            'touches_edge': center_region_touches_edge
+            'touches_edge': center_region_touches_edge,
+            'image_path': path,
         })
+
+    def log_crop_to_center(self, shape, segments, forecount):
+        self.crop_to_center_log.append({
+            'shape': shape,
+            'segments': segments,
+            'forecount': forecount.tolist(),
+        })
+
+    def set_boundary_image(self, image_path):
+        self.boundary_image = image_path
+
+    def set_original_image(self, image_path):
+        self.original_image = image_path
+
+
 
 
 
@@ -114,6 +135,15 @@ class ImageItem():
 
     def set_process_results(self, process_results):
         self.process_results = process_results
+
+    def save_process_log(self, dirpath=os.path.dirname(os.path.realpath(__file__))):
+
+        filename = "{0}.processlog.json".format(self.path.split('/')[-1])
+        with open(join(dirpath + filename), 'w') as outfile:
+            data = self.__dict__
+            data['process_results'] = data['process_results'].__dict__
+            json.dump(data, outfile, sort_keys=True,
+                      indent=2, ensure_ascii=False)
 
 
 class Images():
@@ -141,10 +171,7 @@ class Images():
                         if filename.endswith(source["include_endswith"]):
 
                             if source["mask_contains"] in filename:
-                                mask = ImageItem(
-                                            path=os.path.join(dirpath, filename),
-                                            source=source['name']
-                                        )
+                                mask = os.path.join(dirpath, filename)
                             else:
                                 image = ImageItem(
                                     path=os.path.join(dirpath, filename),
@@ -227,7 +254,7 @@ class Images():
                             image_file = 'PH2Dataset/PH2 Dataset images/{0}/{0}_Dermoscopic_Image/{0}.bmp'.format(ph2Data.name)
                             mask_file = 'PH2Dataset/PH2 Dataset images/{0}/{0}_lesion/{0}_lesion.bmp'.format(ph2Data.name)
 
-                            image = ImageItem('PH2Dataset', image_file, mask_file, extra_data=ph2Data)
+                            image = ImageItem('PH2Dataset', image_file, mask_file, extra_data=ph2Data.__dict__)
 
                             if ph2Data.clinical_diagnosis == '0':
 

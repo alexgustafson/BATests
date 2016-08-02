@@ -1,0 +1,31 @@
+
+include ../mixins/_djade
+
+| {% load menu_tags %}
+
+
++for("child in children")
+
+    li(class="" +
+        "{% if child.selected %} selected {% endif %}" +
+        "{% if child.ancestor %} ancestor {% endif %}" +
+        "{% if child.sibling %} sibling {% endif %}" +
+        "{% if child.descendant %} descendant {% endif %}" +
+        "{% if not child.parent %} dropdown-top top{% else %}child{% endif %}"
+    )
+      a(
+        href="{{ child.attr.redirect_url|default:child.get_absolute_url }}"
+      )
+        .menu-item(class="{% if child.selected %} active {% endif %}")
+          | {{ child.get_menu_title }}
+
+      +if("child.children")
+
+        ul(class="dropdown-child child"
+        )
+          | {% show_menu from_level to_level extra_inactive extra_active template "" "" child %}
+
+
+
+
+

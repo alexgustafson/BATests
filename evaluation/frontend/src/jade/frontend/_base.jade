@@ -1,0 +1,26 @@
+- load i18n
+
+doctype html
+html(lang="{{ LANGUAGE_CODE }}")
+  head
+
+    title
+      - block pagetitle
+        | Title
+
+    - include  'partials/_head.jade'
+
+  body(ng-app="app" ng-controller="MainController")
+    .keytrap(keytrap)
+
+
+      - block content
+        h1 Base Template
+
+
+      footer
+
+      - include 'partials/_scripts.jade'
+
+
+

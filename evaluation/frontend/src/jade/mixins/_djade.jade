@@ -1,0 +1,201 @@
+
+//- DJANGO MIXINS
+//- +
+
+mixin if(expression)
+  | {% if !{ expression } %}
+  block
+  | {% endif %}
+
+
+mixin for(expression)
+  | {% for !{ expression } %}
+  block
+  | {% endfor %}
+
+
+mixin with(expression)
+  | {% with !{ expression } %}
+  block
+  | {% endwith %}
+
+
+mixin extends(filename)
+  | {% extends "!{ filename }" %}
+
+mixin include(filename)
+  | {% include !{ filename } %}
+
+
+mixin load(tags)
+  | {% load !{ tags } %}
+
+
+mixin trans(tags)
+  | {% trans '!{ tags }' %}
+
+
+mixin static (resource, context_variable_name)
+  | {% static '!{ resource }' as !{ context_variable_name } %}
+
+
+mixin url (resource, context_variable_name)
+  | {% url '!{ resource }' as !{ context_variable_name } %}
+
+
+mixin block(block_name)
+  | {% block !{ block_name } %}
+  block
+  | {% endblock %}
+
+mixin blocktrans()
+  | {% blocktrans %}
+  block
+  | {% endblocktrans %}
+
+
+mixin comment
+  | {% comment %}
+  block
+  | {% endcomment %}
+
+mixin verbatim
+  | {% verbatim %}
+  block
+  | {% endverbatim %}
+
+mixin angular
+  | {% verbatim %}
+  block
+  | {% endverbatim %}
+
+
+
+
+mixin _(tag_name, expression)
+  | {% !{ tag_name } !{ expression } %}
+
+
+mixin __(tag_name, expression)
+  | {% !{ tag_name } !{ expression } %}
+  block
+  | {% end!{ tag_name } %}
+
+
+mixin str(text)
+  | {{ !{text} }}
+
+
+
+//- DJANGO-CMS MIXINS
+
+mixin placeholder(placeholder_name)
+  | {% placeholder "!{ placeholder_name }" %}
+
+
+mixin placeholder_or(placeholder_name)
+  | {% placeholder "!{ placeholder_name }" or %}
+  block
+  | {% endplaceholder %}
+
+
+mixin placeholder_inherit(placeholder_name)
+  | {% placeholder "!{ placeholder_name }" inherit %}
+
+
+mixin placeholder_inherit_or(placeholder_name)
+  | {% placeholder "!{ placeholder_name }" inherit or %}
+  block
+  | {% endplaceholder %}
+
+
+mixin show_placeholder(expression)
+  | {% show_placeholder !{ expression } %}
+
+
+mixin show_editable_page_title()
+  | {% show_editable_page_title %}
+
+
+mixin show_uncached_placeholder(expression)
+  | {% show_uncached_placeholder !{ expression } %}
+
+
+mixin page_attribute(expression)
+  | {% page_attribute !{ expression } %}
+
+
+mixin show_menu(expression)
+  | {% show_menu !{ expression } %}
+
+
+mixin show_menu_below_id(expression)
+  | {% show_menu_below_id !{ expression } %}
+
+
+mixin show_sub_menu(expression)
+  | {% show_sub_menu !{ expression } %}
+
+
+mixin show_breadcrumb(expression)
+  | {% show_breadcrumb !{ expression } %}
+
+mixin render_block(block_name)
+  | {% render_block "!{ block_name }" %}
+
+
+mixin render_plugin(plugin_name)
+  | {% render_plugin !{ plugin_name } %}
+
+
+mixin cms_toolbar()
+  | {% cms_toolbar %}
+
+
+mixin stack(stack_name)
+  | {% stack "!{ stack_name }" %}
+
+
+//- MEZZANINE MIXINS
+
+mixin if_installed(expression)
+  | {% ifinstalled !{ expression } %}
+  block
+  | {% endifinstalled %}
+
+
+mixin search_form(expression)
+  | {% search_form "!{expression}" %}
+
+
+
+mixin page_menu(expression)
+  | {% page_menu "!{expression}" %}
+
+mixin nevercache(expression)
+  | {% nevercache !{ expression } %}
+  block
+  | {% endnevercache %}
+
+//- Django-Compressor MIXINS
+
+mixin compress(expression)
+  | {% compress !{ expression } %}
+  block
+  | {% endcompress %}
+
+
+//- HTML MIXINS
+
+mixin stylsheet(url)
+  -url = "{% static '" + url + "' %}"
+  link(rel="stylesheet" href=url)
+
+mixin script(url, filter)
+  if filter
+    -url = "{% static '" + url + "' | " + filter + " %}"
+  else
+    -url = "{% static '" + url + "' %}"
+  script(src=url)
+
+//- +
