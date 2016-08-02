@@ -1,0 +1,36 @@
+{
+  "name": "concise",
+  "description": "A front-end framework written in SASS that's lightweight, and easy-to-use.",
+  "version": "3.4.0",
+  "ignore": [
+    ".gitignore",
+    ".editorconfig",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "keywords": [
+    "css",
+    "scss",
+    "sass",
+    "mobile-first",
+    "responsive",
+    "front-end",
+    "framework",
+    "web"
+  ],
+  "homepage": "http://concisecss.com",
+  "main": [
+    "dist/concise.css"
+  ],
+  "_release": "3.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.4.0",
+    "commit": "e6ef157e6f85a4e685125a1e771d00894266bf29"
+  },
+  "_source": "https://github.com/ConciseCSS/concise.css.git",
+  "_target": "^3.4.0",
+  "_originalSource": "concise",
+  "_direct": true
+}

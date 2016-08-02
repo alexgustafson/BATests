@@ -1,0 +1,71 @@
+
+{% extends "site_base.html" %}
+
+{% load account_tags %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block head_title %}{% trans "Job" %}{% endblock %}
+
+{% block breadcrumb %}
+    {{ block.super }}
+    <li class="active">
+        <a href="{% url 'jobs:job-list' %}">{% trans 'jobs' %}</a>
+    </li>
+{% endblock %}
+
+{% block body %}
+
+    <table class="table">
+
+        <thead>
+
+        <tr>
+            <td>{% trans 'Title' %}</td>
+
+        </tr>
+
+        </thead>
+
+        {% for object in object_list %}
+            <tr>
+                <td class="">
+                    <a href="{{ object.get_absolute_url }}">
+                        {{ object.title }}
+                    </a>
+                </td>
+
+                <td>
+                    <a href="{% url 'jobs:job-edit' object.pk %}">
+                        {% trans 'Edit' %}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+    {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li>
+                    <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+                </li>
+            {% endif %}
+            <li class="">
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li>
+                    <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+

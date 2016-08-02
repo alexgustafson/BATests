@@ -1,0 +1,20 @@
+
+{% extends "site_base.html" %}
+
+{% load account_tags %}
+{% load i18n %}
+{% load bootstrap %}
+
+{% block head_title %}{% trans "Job" %}{% endblock %}
+
+{% block body %}
+<div class="item">
+    <a href="{% url '{{ cookiecutter.project_slug }}:{{ cookiecutter.main_model_name.lower() }}-list' %}">list</a>
+
+    <div class="title">{{ object.title }}</div>
+    <div class="description">{{ object.description }}</div>
+
+    <a href="{% url '{{ cookiecutter.project_slug }}:{{ cookiecutter.main_model_name.lower() }}-edit' object.pk %}">edit</a>
+</div>
+{% endblock %}
+
