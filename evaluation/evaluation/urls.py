@@ -45,7 +45,6 @@ urlpatterns = [
     url(r'^initialize', 'border_results.views.initialize'),
     url(r'^process', include('process.urls', namespace='process')),
     url(r'^api/processlogs/$', 'border_results.views.processlogs'),
-    #url(r'^', 'border_results.views.index'),
 ]
 
 

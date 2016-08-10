@@ -10,7 +10,7 @@
     h1 Preprocess Algorithm
     h2 Evaluation Tool
 
-  .container()
+  .container(ng-controller="BorderController")
     .left()
 
       .file-list
@@ -48,6 +48,13 @@
           .original
             label Original Image:
             img(ng-src="/static/{{ logData.path }}")
+            .details
+              .sfa Category : {{ logData.category }}
+              .sfa SFA major : {{ logData.SFA_major }}
+              .sfa SFA minor : {{ logData.SFA_minor }}
+              .sfa Major Axis Angle : {{ logData.major_axis_angle }}
+              .sfa Border : {{ logData.border }}
+
           .boundary
             label Border Image:
             img(ng-src="/static/{{ logData.boundary_image }}")
@@ -55,6 +62,8 @@
           .mask
             label Source Mask:
             img(ng-src="/static/{{ logData.mask }}")
+
+
 
 
 

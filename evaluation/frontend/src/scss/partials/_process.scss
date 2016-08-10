@@ -1,0 +1,25 @@
+.process-queue-manager {
+  @include grid-row();
+  max-width: 100%;
+
+  padding: 1em;
+
+  .process-queue-commands {
+    @include grid-column(3);
+  }
+
+  .process-queue-editor{
+    @include grid-column(6);
+  }
+
+  .process-queue-items {
+    @include grid-column(6);
+    .item {
+      text-align: center;
+      padding: 0.5em;
+      border: 1px solid grey;
+
+    }
+  }
+
+}

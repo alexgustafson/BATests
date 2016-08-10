@@ -36,6 +36,8 @@ class Process(models.Model):
 
     def __unicode__(self):
         return u"{0}".format(self.title)
+    def __str__(self):
+        return u"{0}".format(self.title)
 
     def get_absolute_url(self):
         return reverse('process:process-detail', args=[str(self.id)])

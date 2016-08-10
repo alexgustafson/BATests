@@ -22,6 +22,7 @@
     "open-iconic": "^1.1.1",
     "angular": "^1.5.7",
     "concise": "^3.4.0",
-    "angular-cookies": "^1.5.7"
+    "angular-cookies": "^1.5.7",
+    "foundation": "^5.5.3"
   }
 }

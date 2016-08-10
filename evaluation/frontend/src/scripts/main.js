@@ -6,8 +6,13 @@ app.run(function ($http, $cookies) {
   return $http.defaults.xsrfHeaderName = 'X-CSRFToken';
 });
 
+app.controller('MainController', ['$scope', function($scope) {
 
-app.controller('MainController',
+}]);
+
+
+
+app.controller('BorderController',
   ['$scope', '$http', function ($scope, $http) {
 
     $scope.allLogs = [];

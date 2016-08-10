@@ -1,0 +1,60 @@
+- extends "frontend/_base.jade"
+
+- load i18n
+
+- block head_title
+    - trans "Job"
+
+- block breadcrumb %}
+    {{ block.super }}
+
+
+- block content
+
+    .process-queue-manager(ng-controller="ProcessManager")
+        .process-queue-commands
+
+            h3 Process Queue
+
+            .process-selector(ng-controller="ProcessQueueListController")
+                select(
+                    ng-options="item as item.title for item in processQueueList track by item.id"
+                    ng-model="$parent.activeProcessQueue"
+                )
+
+
+            a.button.small(ng-click="toggleNewEditor()") New
+            a.button.small(ng-click="toggleEditEditor()") Edit
+
+            form.form(ng-show="showNewEditor")
+                label Title
+                    input(type=text ng-model="newProcess.title")
+                    .button.small(ng-click="submitProcess()") Save
+
+        .process-queue-editor(ng-controller="ProcessQueueEditor")
+            h3
+                - verbatim
+                    {{ $parent.activeProcessQueue.title }}
+
+            .process-queue-items
+                .item(ng-repeat="item in processQueueItems" ng-click="toggleEditEditor(item)")
+                    - verbatim
+                        {{ item.order }} {{ item.process.title }}
+
+                .controls
+                    a.button.small(ng-click="toggleNewEditor()") New
+
+                    form.form(ng-show="showNewEditor")
+                        label Title
+                            input(type=text ng-model="newProcess.title")
+                            .button.small(ng-click="submitProcess()") Save
+                    form.form(ng-show="showEditEditor")
+                        label Title
+                            input(type=text ng-model="activeItem.process.title")
+                            .button.small(ng-click="submitProcess()") Save
+
+
+
+- block extra_scripts
+    {{ block.super }}
+    script(src='/static/process/scripts/process.js')

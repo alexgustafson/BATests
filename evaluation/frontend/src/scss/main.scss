@@ -4,10 +4,12 @@
 @import "../../static/frontend/vendor/breakpoint-sass/stylesheets/_breakpoint.scss";
 @import "../../static/frontend/vendor/open-iconic/font/css/open-iconic.scss";
 @import "../../static/frontend/vendor/concise/src/concise.scss";
+@import "../../static/frontend/vendor/foundation/scss/foundation.scss";
 // endbower
 @import "globals";
 @import "partials/typo";
 @import "partials/header";
+@import "partials/process";
 
 body {
 

@@ -22,5 +22,8 @@ html(lang="{{ LANGUAGE_CODE }}")
 
       - include 'partials/_scripts.jade'
 
+      - block extra_scripts
+        script(src='/static/frontend/scripts/main.js')
+
 
 

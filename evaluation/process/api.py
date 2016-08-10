@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework import filters
 from .models import Process
 from .models import ProcessQueue
 from .models import ProcessQueueItem
@@ -28,6 +29,9 @@ class ProcessQueueViewSet(viewsets.ModelViewSet):
 
 
 class ProcessQueueItemSerializer(serializers.ModelSerializer):
+
+    process = ProcessSerializer()
+
     class Meta:
         model = ProcessQueueItem
 
@@ -35,6 +39,8 @@ class ProcessQueueItemSerializer(serializers.ModelSerializer):
 class ProcessQueueItemViewSet(viewsets.ModelViewSet):
     queryset = ProcessQueueItem.objects.all()
     serializer_class = ProcessQueueItemSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('process', 'queue')
 
 
 class AlgorithmSerializer(serializers.ModelSerializer):

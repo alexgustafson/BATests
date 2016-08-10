@@ -10,11 +10,24 @@ BORDER_CHOICES = (
     (30, 'Not Useable'),
 )
 
+def choice_to_string(choice):
+    if choice == 0:
+        return 'None'
+    elif choice == 10:
+        return 'Precise'
+    elif choice == 20:
+        return  'Approximate'
+    else:
+        return 'Not Useable'
+
 
 class Evaluation(models.Model):
 
     region_isolate = models.BooleanField(default=True)
     border_quality = models.IntegerField(choices=BORDER_CHOICES)
+
+    def __str__(self):
+        return choice_to_string(self.border_quality)
 
 
 class ProcessResult(models.Model):
@@ -29,10 +42,16 @@ class ProcessResult(models.Model):
     source = models.CharField('Source', max_length=255)
 
     boundary_image = models.CharField('Boundary', max_length=511, null=True, blank=True)
+    calculated_mask = models.CharField('Calulated Mask', max_length=511, null=True, blank=True)
     original_image = models.CharField('Cropped', max_length=511, null=True, blank=True)
     shape = models.CharField('Shape', max_length=127, blank=True, null=True)
 
     evaluation = models.ForeignKey(Evaluation, blank=True, null=True, related_name="results")
+
+    SFA_major = models.IntegerField('SFA major', null=True, blank=True)
+    SFA_minor = models.IntegerField('SFA minor', null=True, blank=True)
+    major_axis_angle = models.IntegerField('Major Axis Angle', null=True, blank=True)
+    border = models.IntegerField('Border Irregularity', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
