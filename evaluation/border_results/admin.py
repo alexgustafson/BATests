@@ -13,6 +13,6 @@ class CropToCenterLogAdmin(admin.TabularInline):
 class ProcessResultAdmin(admin.ModelAdmin):
     inlines = [SizeIndexLogAdmin, CropToCenterLogAdmin,]
     list_filter = ['evaluation__region_isolate', 'source', 'evaluation__border_quality', 'category',]
-    list_display = ('name', 'source', 'SFA_major', 'SFA_minor',)
+    list_display = ('name', 'source', 'SFA_major', 'SFA_minor', 'color_score', 'border')
 
 admin.site.register(ProcessResult, ProcessResultAdmin)

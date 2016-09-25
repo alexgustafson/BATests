@@ -38,10 +38,17 @@ class ProcessResultViewSet(viewsets.ModelViewSet):
         Optionally restricts the returned purchases to a given user,
         by filtering against a `username` query parameter in the URL.
         """
-        queryset = ProcessResult.objects.all()
+        queryset = ProcessResult.objects
         filename = self.request.query_params.get('filename', None)
         name = self.request.query_params.get('name', None)
         notevaluated = self.request.query_params.get('notevaluated', None)
+        bad_image = self.request.query_params.get('bad_image', None)
+        if bad_image is not None:
+            if bad_image == 'false':
+                queryset = queryset.exclude(evaluation__bad_image=True)
+            else:
+                queryset = queryset.filter(evaluation__bad_image=True)
+
         if name is not None:
             queryset = queryset.filter(name=name)
         if filename is not None:

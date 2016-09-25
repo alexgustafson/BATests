@@ -1,4 +1,4 @@
-from utilities.images import all_images
+from utilities.images import all_images, imageDB
 from utilities.border import find_border
 from utilities.radii import calculate_radii
 from utilities.sfa import sfa
@@ -9,8 +9,14 @@ from skimage import color
 from skimage import measure
 import cv2
 
-im = all_images["Dermofit"][537]
-border, mask, cropped, masked = find_border(im)
+images = imageDB.sources["Dermofit"]['Categories']['Malignant Melanoma']
+
+for im in images:
+    try:
+        border, mask, cropped, masked = find_border(im)
+    except:
+        print('could not create masks')
+        pass
 
 fig = plt.figure(figsize=(19, 19))
 ax = fig.add_subplot(111)

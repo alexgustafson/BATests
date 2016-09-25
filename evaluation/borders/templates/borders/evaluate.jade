@@ -1,0 +1,10 @@
+- extends 'frontend/_base.jade'
+
+- load i18n
+
+- block pagetitle
+  | Title
+
+- block content
+  - for image in images
+    {{ image.name }}

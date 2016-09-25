@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'border_results',
     'frontend',
     'process',
+    'borders',
 ]
 
 MIDDLEWARE_CLASSES = [

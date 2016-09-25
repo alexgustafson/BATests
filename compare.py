@@ -1,16 +1,11 @@
-from PIL import Image
+import cv2
+from skimage import measure
 import utilities.start_django
 from border_results.models import ProcessResult
-from utilities.radii import calculate_radii
-from utilities.sfa import sfa
+from numpy import array
+from PIL import Image
+import os
 from pylab import *
-import os.path
-
-
-#lesion_images = ProcessResult.objects.all()
-lesion_images = ProcessResult.objects.filter(source='PH2Dataset')
-lesion_images = ProcessResult.objects.filter(source='Dermofit').filter(evaluation__border_quality=10)
-
 
 def result_has_mask(lesion_image):
     if lesion_image.evaluation.border_quality == 10:
@@ -33,11 +28,9 @@ def get_mask(lesion_image):
     return None
 
 
-for lesion_image in lesion_images:
+lesion_images = ProcessResult.objects.filter(evaluation__border_quality=10)
 
-    print(lesion_image)
-    if lesion_image.name == 'B102d.png':
-        print('debug')
+for lesion_image in lesion_images:
 
     if result_has_mask(lesion_image):
         if os.path.exists(get_mask(lesion_image)):
@@ -50,13 +43,15 @@ for lesion_image in lesion_images:
             continue
     else:
         continue
-    try:
-        radii = calculate_radii(border)
-        main_axis, minor_axis = sfa(radii)
 
-        lesion_image.major_axis_angle = main_axis['angle']
-        lesion_image.SFA_major = main_axis['SFAa']
-        lesion_image.SFA_minor = minor_axis['SFAa']
-        lesion_image.save()
-    except:
-        pass
+    if len(border.shape)> 2:
+        border = border[:,:,0]
+
+    props = measure.regionprops(border)
+    output = cv2.connectedComponentsWithStats(border, 4, cv2.CV_32S)
+
+    regions = output[1]
+    stats = output[2]
+
+    print(lesion_image.name)
+

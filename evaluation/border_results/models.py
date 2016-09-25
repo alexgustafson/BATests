@@ -25,9 +25,11 @@ class Evaluation(models.Model):
 
     region_isolate = models.BooleanField(default=True)
     border_quality = models.IntegerField(choices=BORDER_CHOICES)
+    bad_image = models.NullBooleanField('Bad Image', null=True, blank=True)
+
 
     def __str__(self):
-        return choice_to_string(self.border_quality)
+        return u'{0} - {1}'.format(choice_to_string(self.border_quality), self.bad_image)
 
 
 class ProcessResult(models.Model):
@@ -52,6 +54,15 @@ class ProcessResult(models.Model):
     SFA_minor = models.IntegerField('SFA minor', null=True, blank=True)
     major_axis_angle = models.IntegerField('Major Axis Angle', null=True, blank=True)
     border = models.IntegerField('Border Irregularity', null=True, blank=True)
+
+    white = models.FloatField('White', null=True, blank=True)
+    red = models.FloatField('Red', null=True, blank=True)
+    light_brown = models.FloatField('Light Brown', null=True, blank=True)
+    dark_brown = models.FloatField('Dark Brown', null=True, blank=True)
+    blue_gray = models.FloatField('Blue Gray', null=True, blank=True)
+    black = models.FloatField('Black', null=True, blank=True)
+
+    color_score = models.FloatField('Color Score', null=True, blank=True)
 
     def __unicode__(self):
         return self.name

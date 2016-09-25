@@ -1,0 +1,28 @@
+table
+  thead
+    tr
+    td Name
+    td Source
+    td Category
+    td Asymmetry
+    td Border
+    td Color
+    td TDS
+
+
+- for lesion in Dermofit
+
+  tr
+    td {{ lesion.name }}
+    td {{ lesion.source }}
+    td {{ lesion.category }}
+    td {{ lesion.asymmetry }}
+    td {{ lesion.border }}
+    td {{ lesion.color_score }}
+    td {{ lesion.tds }} \\
+  br
+
+strong Results of TDS calculation for Dermfit}
+
+
+

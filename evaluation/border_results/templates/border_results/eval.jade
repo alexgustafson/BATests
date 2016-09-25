@@ -1,0 +1,44 @@
+br
+|     \begin{longtable}{ | l | l | l | l | l |}
+br
+|     \hline
+br
+|     Source & False Positives & False Negatives & Correct & Total  \\ \hline
+br
+
+
+- for result in Results
+
+  {{ result.source }} & {{ result.false_positives }} & {{ result.false_negatives }} & {{ result.correct }} & {{ result.total }}   \\
+  br
+
+| \hline
+br
+|    \caption{Results of TDS calculation}
+br
+|    \label{fig:tda_overview}
+br
+| \end{longtable}
+
+
+br
+|     \begin{longtable}{ | l | l | l | l | }
+br
+|     \hline
+br
+|     Source & Malignagt & Malignant Correct & Total  \\ \hline
+br
+
+
+- for result in Results
+
+  {{ result.source }} & {{ result.total_malignant }} & {{ result.total_malignant_correct }} & {{ result.total }}  \\
+  br
+
+| \hline
+br
+|    \caption{Correctly Diagnosed Malignant Melanoma Images}
+br
+|    \label{fig:tds_correct_mal}
+br
+| \end{longtable}

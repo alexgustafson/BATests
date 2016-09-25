@@ -27,6 +27,10 @@
     .right(ng-controller="LogController")
       - verbatim
         .form
+          button.alert.button(ng-click="markAsBad()") Mark As Bad Image
+
+      - verbatim
+        .form
 
           .input-fields
 
@@ -54,6 +58,7 @@
               .sfa SFA minor : {{ logData.SFA_minor }}
               .sfa Major Axis Angle : {{ logData.major_axis_angle }}
               .sfa Border : {{ logData.border }}
+              .sfa Color : {{ logData.color_score }}
 
           .boundary
             label Border Image:

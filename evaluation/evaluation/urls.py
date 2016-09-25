@@ -41,8 +41,11 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', admin.site.urls),
-    url(r'^borders', 'border_results.views.index'),
+    url(r'^results/', 'border_results.views.results'),
+    url(r'^borders', include('borders.urls')),
+    #url(r'^borders', 'border_results.views.index'),
     url(r'^initialize', 'border_results.views.initialize'),
+    url(r'^evaluation', 'border_results.views.evaluation'),
     url(r'^process', include('process.urls', namespace='process')),
     url(r'^api/processlogs/$', 'border_results.views.processlogs'),
 ]

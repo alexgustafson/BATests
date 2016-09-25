@@ -14,8 +14,8 @@ import os
 
 #source_images += imageDB.sources['Dermofit']['Categories']['Melanocytic Nevus']
 #source_images += imageDB.sources['Dermofit']['Categories']['Malignant Melanoma']
-#source_images += imageDB.sources['DermQuest']['Categories']['Malignant Melanoma']
-source_images = imageDB.sources['DermQuest']['Categories']['Melanocytic Nevus']
+source_images = imageDB.sources['DermQuest']['Categories']['Malignant Melanoma']
+#source_images = imageDB.sources['DermQuest']['Categories']['Melanocytic Nevus']
 #source_images += imageDB.sources['DermQuest']['Categories']['Benign Keratosis']
 
 

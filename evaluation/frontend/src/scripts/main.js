@@ -6,10 +6,9 @@ app.run(function ($http, $cookies) {
   return $http.defaults.xsrfHeaderName = 'X-CSRFToken';
 });
 
-app.controller('MainController', ['$scope', function($scope) {
+app.controller('MainController', ['$scope', function ($scope) {
 
 }]);
-
 
 
 app.controller('BorderController',
@@ -25,7 +24,8 @@ app.controller('BorderController',
       {name: "Not Useable", id: 30},
     ];
 
-    $http.get('/api/processlog').success(function (data) {
+    $http.get('/api/processlog', {params: {'bad_image': false}}).success(function (data) {
+      //$http.get('/api/processlog', {params: {'notevaluated': 'True'}}).success(function (data) {
 
       $scope.allLogs = data;
 
@@ -45,7 +45,7 @@ app.controller('BorderController',
 
           $scope.evaluation = evaluation.data;
 
-        }, function() {
+        }, function () {
           $scope.evaluation = {
             border_quality: 0,
             region_isolate: false
@@ -95,17 +95,32 @@ app.controller('BorderController',
 
     })
 
-    $scope.postEvaluation = function() {
+    $scope.postEvaluation = function () {
 
-      $http.post('/api/evaluation/', $scope.evaluation).then(function(data) {
+      $http.post('/api/evaluation/', $scope.evaluation).then(function (data) {
         $scope.evaluation = data.data;
         $scope.logData.evaluation = data.data.id;
-        
+
         $http.put('/api/processlog/' + $scope.logData.id + '/', $scope.logData).then(function (data) {
           $scope.logData = data.data;
         })
       });
+    }
 
+    $scope.markAsBad = function () {
+
+      $scope.evaluation.bad_image = 'True';
+
+      $http.post('/api/evaluation/', $scope.evaluation).then(function (data) {
+        $scope.evaluation = data.data;
+        $scope.logData.evaluation = data.data.id;
+
+        $http.put('/api/processlog/' + $scope.logData.id + '/', $scope.logData).then(function (data) {
+          $scope.logData = data.data;
+        })
+
+
+      });
     }
 
   }]);

@@ -1,0 +1,64 @@
+|     \begin{longtable}{ | l | l | l | l | l | l | l |}
+br
+|     \hline
+br
+|     Name & Source & Category & Asymmetry & Border & Color & TDS \\ \hline
+br
+
+- for lesion in Dermofit
+
+  {{ lesion.name }} & {{ lesion.source }} & {{ lesion.category }} & {{ lesion.asymmetry }} & {{ lesion.border }} & {{ lesion.color_score }} & {{ lesion.tds }} \\
+  br
+| \hline
+br
+| \caption{Results of TDS calculation for Dermfit}
+br
+| \label{fig:tds_results_dermfit}
+br
+| \end{longtable}
+
+
+br
+|     \begin{longtable}{ | l | l | l | l | l | l | l |}
+br
+|     \hline
+br
+|     Name & Source & Category & Asymmetry & Border & Color & TDS \\ \hline
+br
+
+
+- for lesion in Dermquest
+
+  {{ lesion.name }} & {{ lesion.source }} & {{ lesion.category }} & {{ lesion.asymmetry }} & {{ lesion.border }} & {{ lesion.color_score }} & {{ lesion.tds }} \\
+  br
+
+| \hline
+br
+|    \caption{Results of TDS calculation for DermQuest}
+br
+|    \label{fig:tds_results_dermq}
+br
+| \end{longtable}
+
+
+br
+|     \begin{longtable}{ | l | l | l | l | l | l | l |}
+br
+|     \hline
+br
+|     Name & Source & Category & Asymmetry & Border & Color & TDS \\ \hline
+br
+
+
+- for lesion in PH2
+
+  {{ lesion.name }} & {{ lesion.source }} & {{ lesion.category }} & {{ lesion.asymmetry }} & {{ lesion.border }} & {{ lesion.color_score }} & {{ lesion.tds }} \\
+  br
+| \hline
+br
+br
+|    \caption{Results of TDS calculation for PH2Dataset}
+br
+|    \label{fig:tds_results_ph2}
+br
+| \end{longtable}

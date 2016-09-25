@@ -170,8 +170,8 @@ def find_border(image_original, threshold=0.26, debug=False):
 
     if debug:
 
-        imsave(path('debug_results/{0}'.format(filename)).abspath(), image_original.get_image_data())
-        #(path('debug_results/{0}.A_preprocessed_01.jpeg'.format(filename)).abspath(), image_lab)
+        #imsave(path('debug_results/{0}'.format(filename)).abspath(), image_original.get_image_data())
+        imsave(path('debug_results/{0}.A_preprocessed_01.jpeg'.format(filename)).abspath(), image_lab)
         imsave(path('debug_results/{0}.A_preprocessed_02.jpeg'.format(filename)).abspath(), im)
         imsave(path('debug_results/{0}.A_preprocessed_L.png'.format(filename)).abspath(), im[:,:,0])
 
@@ -245,6 +245,7 @@ def find_border(image_original, threshold=0.26, debug=False):
 
     if debug:
         imsave(path('debug_results/{0}.E_border.png'.format(filename)).abspath(), border)
+
         #imsave(path('debug_results/{0}.F_mask.png'.format(filename)).abspath(), mask)
         #imsave(path('debug_results/{0}.G_masked.png'.format(filename)).abspath(), masked)
 
