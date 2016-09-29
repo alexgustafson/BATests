@@ -1,54 +1,50 @@
-import cv2
+import os
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 import utilities.start_django
 from border_results.models import ProcessResult
-from numpy import array
+
 from PIL import Image
-import os
-from path import path
-import matplotlib
 
-import numpy as np
-import matplotlib.pyplot as plt
 from skimage.segmentation import slic, clear_border, mark_boundaries, felzenszwalb
-from skimage.color import rgb2hsv, rgb2gray
-from skimage import measure
-from skimage.filters import gaussian, median
+from skimage.color import rgb2hsv
 from skimage import exposure
-from skimage.morphology import closing
-from skimage.io import imsave
-from skimage.restoration import denoise_tv_chambolle, denoise_bilateral
-from skimage import data, img_as_float
-
-from skimage.filters.rank import median
 from skimage.morphology import disk
+from pylab import *
 
-def plot_img_and_hist(img, axes, bins=256):
-    """Plot an image along with its histogram and cumulative histogram.
 
-    """
-    img = img_as_float(img)
-    ax_img, ax_hist = axes
-    ax_cdf = ax_hist.twinx()
+def transform_to_hsv_space(im):
 
-    # Display image
-    ax_img.imshow(img, cmap=plt.cm.gray)
-    ax_img.set_axis_off()
-    ax_img.set_adjustable('box-forced')
+    fig = plt.figure(figsize=(12, 6))
 
-    # Display histogram
-    ax_hist.hist(img.ravel(), bins=bins, histtype='step', color='black')
-    ax_hist.ticklabel_format(axis='y', style='scientific', scilimits=(0, 0))
-    ax_hist.set_xlabel('Pixel intensity')
-    ax_hist.set_xlim(0, 1)
-    ax_hist.set_yticks([])
+    ax = fig.add_subplot(121)
+    ax.imshow(im)
+    ax.set_title('Original Image')
 
-    # Display cumulative distribution
-    img_cdf, bins = exposure.cumulative_distribution(img, bins)
-    ax_cdf.plot(bins, img_cdf, 'r')
-    ax_cdf.set_yticks([])
+    ax = fig.add_subplot(122, projection='3d')
 
-    return ax_img, ax_hist, ax_cdf
+    #im = rgb2hsv(im)
+    index = 0
+
+    # loop through pixels array and add each pixel as item in scatter plot
+    for row in im:
+        for pixel in row:
+            index = index + 1
+            if index % 80 > 0:
+                continue
+            [[(H, S, V)]] =  rgb2hsv([[pixel]])
+            x = cos(H*2*pi) * S
+            y = sin(-H*2*pi) * S
+            z = V
+            color = (pixel[0]/255.,pixel[1]/255.,pixel[2]/255.)
+            marker = ','
+
+            ax.scatter(x,y,z,c=color, s=10, lw = 0, alpha=0.08)
+    ax.set_zlabel('V')
+    ax.view_init(elev=17., azim=30)
+    ax.set_title('Image in HSV Space')
+    plt.show()
 
 def regularize_array_lengths(arr, val=0.):
 
@@ -142,11 +138,13 @@ for lesion_image in lesion_images:
     width = image.width
 
     image = array(image)
-    image = image[200:-200, 200:-200]
+    oimage = np.copy(image)
 
     center = (int(height / 2), int(width / 2))
-    sigma = image.size / 600000
+    sigma = image.size / 800000
     size = image.size
+    disk_size = int(size/500000)
+    disk_size = max(disk_size, 2) +1
 
     if mode == 'RGBA':
         image = image[:,:,0:3]
@@ -154,37 +152,51 @@ for lesion_image in lesion_images:
     if lesion_image.source == 'DermQuest':
         image = image[0:-100, :]
 
+    transform_to_hsv_space(image)
 
-    gray = rgb2gray(image)
+    kernel_size = int(min(height, width) / 80)
+    image = exposure.equalize_adapthist(image, kernel_size=kernel_size, clip_limit=0.01)
+    image[:,:,0] = median(image[:,:,0], disk(disk_size))
+    image[:,:,1] = median(image[:,:,1], disk(disk_size))
+    image[:,:,2] = median(image[:,:,2], disk(disk_size))
 
-    disk_size = int(size/500000)
-    disk_size = max(disk_size, 2) +1
 
-    med_img = np.copy(image)
-    med2_img = np.copy(image)
+    image = image[200:-200, 200:-200]
 
-    med_img = gaussian(image, sigma)
+    hsv_image = rgb2hsv(image)
+    h = hsv_image[:,:,0]
+    s = hsv_image[:,:,1]
+    v = hsv_image[:,:,2]
 
+    s_inv_v = s * ((v * -1))
+    s_inv_v_h = s * ((v * -1) + 1) * ((h * -1) + 1)
 
     fig = plt.figure(figsize=(16, 6))
 
-    ax = fig.add_subplot(131)
+    ax = fig.add_subplot(241)
     ax.set_title('original image', fontsize=20)
-    ax.imshow(image)
-    ax = fig.add_subplot(132)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma), fontsize=20)
-    ax.imshow(med_img)
+    ax.imshow(oimage)
 
-    med2_img = gaussian(image, sigma * 3)
+    ax = fig.add_subplot(242)
+    thresh = 100
+    ax.set_title('hue', fontsize=20)
+    ax.imshow(hsv_image[:,:,0])
 
+    ax = fig.add_subplot(243)
+    ax.set_title('saturation', fontsize=20)
+    ax.imshow(hsv_image[:,:,1])
 
-    ax = fig.add_subplot(133)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma * 3), fontsize=20)
+    ax = fig.add_subplot(244)
+    ax.set_title('value', fontsize=20)
+    ax.imshow(hsv_image[:,:,2])
 
-    ax.imshow(med2_img)
+    ax = fig.add_subplot(245)
+    ax.set_title('s * inv(v)', fontsize=20)
+    ax.imshow(s_inv_v)
 
 
     print(u'{0} | width: {1} height : {2} center:{3}, sigma{4}'.format(lesion_image.name, image.shape[0], image.shape[1], center, sigma))
 
     plt.show()
+
 

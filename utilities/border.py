@@ -148,12 +148,21 @@ def test_centermost_region_touches_edges(regions):
 
 def find_border(image_original, threshold=0.26, debug=False):
 
+    if hasattr(image_original, 'shape'):
+        image = image_original
+        filename = "test"
+        shape = image.shape
+        process_log = ImageProcessResults(shape)
+    else:
+        image = image_original.get_image_data()
+        filename = image_original.name
+        shape = image.shape
+        process_log = ImageProcessResults(shape)
+        image_original.set_process_results(process_log)
 
-    image = image_original.get_image_data()
-    shape = image.shape
-    filename = image_original.name
-    process_log = ImageProcessResults(shape)
-    image_original.set_process_results(process_log)
+
+
+
 
     image_lab = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
 

@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from skimage.segmentation import slic, clear_border, mark_boundaries, felzenszwalb
 from skimage.color import rgb2hsv, rgb2gray
 from skimage import measure
-from skimage.filters import gaussian, median
+from skimage.filters import gaussian, median, threshold_otsu
 from skimage import exposure
 from skimage.morphology import closing
 from skimage.io import imsave
@@ -22,6 +22,9 @@ from skimage import data, img_as_float
 
 from skimage.filters.rank import median
 from skimage.morphology import disk
+
+from skimage import img_as_ubyte
+import cv2
 
 def plot_img_and_hist(img, axes, bins=256):
     """Plot an image along with its histogram and cumulative histogram.
@@ -145,7 +148,7 @@ for lesion_image in lesion_images:
     image = image[200:-200, 200:-200]
 
     center = (int(height / 2), int(width / 2))
-    sigma = image.size / 600000
+    sigma = image.size / 800000
     size = image.size
 
     if mode == 'RGBA':
@@ -154,8 +157,9 @@ for lesion_image in lesion_images:
     if lesion_image.source == 'DermQuest':
         image = image[0:-100, :]
 
-
-    gray = rgb2gray(image)
+    kernel_size = int(min(height, width) / 80)
+    img_adapteq = exposure.equalize_adapthist(image, kernel_size=kernel_size, clip_limit=0.01)
+    gray = rgb2gray(img_adapteq)
 
     disk_size = int(size/500000)
     disk_size = max(disk_size, 2) +1
@@ -163,8 +167,11 @@ for lesion_image in lesion_images:
     med_img = np.copy(image)
     med2_img = np.copy(image)
 
-    med_img = gaussian(image, sigma)
+    med_img[:,:,0] = median(img_adapteq[:,:,0], disk(disk_size))
+    med_img[:,:,1] = median(img_adapteq[:,:,1], disk(disk_size))
+    med_img[:,:,2] = median(img_adapteq[:,:,2], disk(disk_size))
 
+    gray = rgb2gray(med_img)
 
     fig = plt.figure(figsize=(16, 6))
 
@@ -172,19 +179,27 @@ for lesion_image in lesion_images:
     ax.set_title('original image', fontsize=20)
     ax.imshow(image)
     ax = fig.add_subplot(132)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma), fontsize=20)
-    ax.imshow(med_img)
+    thresh = 100
+    ax.set_title('threshold {0:.2f}'.format(thresh/255), fontsize=20)
 
-    med2_img = gaussian(image, sigma * 3)
+    ret, mask = cv2.threshold(img_as_ubyte(gray), thresh, 255, cv2.THRESH_BINARY)
+    output = cv2.connectedComponentsWithStats(img_as_ubyte(255 - mask), 4, cv2.CV_32S)
+    regions = output[1]
 
+    ax.imshow(regions)
+    thresh = 127
+    ret, mask = cv2.threshold(img_as_ubyte(gray), thresh, 255, cv2.THRESH_BINARY)
+    output = cv2.connectedComponentsWithStats(img_as_ubyte(255 - mask), 4, cv2.CV_32S)
+    regions = output[1]
 
     ax = fig.add_subplot(133)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma * 3), fontsize=20)
+    ax.set_title('threshold {0:.2f}'.format(thresh/255), fontsize=20)
 
-    ax.imshow(med2_img)
+    ax.imshow(regions)
 
 
     print(u'{0} | width: {1} height : {2} center:{3}, sigma{4}'.format(lesion_image.name, image.shape[0], image.shape[1], center, sigma))
 
     plt.show()
+
 

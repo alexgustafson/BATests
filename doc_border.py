@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from skimage.segmentation import slic, clear_border, mark_boundaries, felzenszwalb
 from skimage.color import rgb2hsv, rgb2gray
 from skimage import measure
-from skimage.filters import gaussian, median
+from skimage.filters import gaussian, median, threshold_otsu
 from skimage import exposure
 from skimage.morphology import closing
 from skimage.io import imsave
@@ -22,6 +22,10 @@ from skimage import data, img_as_float
 
 from skimage.filters.rank import median
 from skimage.morphology import disk
+
+from skimage import img_as_ubyte
+import cv2
+from utilities.border import find_border
 
 def plot_img_and_hist(img, axes, bins=256):
     """Plot an image along with its histogram and cumulative histogram.
@@ -145,7 +149,7 @@ for lesion_image in lesion_images:
     image = image[200:-200, 200:-200]
 
     center = (int(height / 2), int(width / 2))
-    sigma = image.size / 600000
+    sigma = image.size / 800000
     size = image.size
 
     if mode == 'RGBA':
@@ -154,37 +158,26 @@ for lesion_image in lesion_images:
     if lesion_image.source == 'DermQuest':
         image = image[0:-100, :]
 
+    kernel_size = int(min(height, width) / 80)
+    img_adapteq = exposure.equalize_adapthist(image, kernel_size=kernel_size, clip_limit=0.01)
+    border, mask, cropped, masked = find_border(img_as_ubyte(img_adapteq), debug=False)
 
-    gray = rgb2gray(image)
-
-    disk_size = int(size/500000)
-    disk_size = max(disk_size, 2) +1
-
-    med_img = np.copy(image)
-    med2_img = np.copy(image)
-
-    med_img = gaussian(image, sigma)
 
 
     fig = plt.figure(figsize=(16, 6))
 
     ax = fig.add_subplot(131)
     ax.set_title('original image', fontsize=20)
-    ax.imshow(image)
+    ax.imshow(cropped)
     ax = fig.add_subplot(132)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma), fontsize=20)
-    ax.imshow(med_img)
+    thresh = 100
+    ax.set_title('threshold {0:.2f}'.format(thresh/255), fontsize=20)
+    ax.imshow(border)
 
-    med2_img = gaussian(image, sigma * 3)
-
-
-    ax = fig.add_subplot(133)
-    ax.set_title('gaussian filter, sigma={0:.1f}'.format(sigma * 3), fontsize=20)
-
-    ax.imshow(med2_img)
 
 
     print(u'{0} | width: {1} height : {2} center:{3}, sigma{4}'.format(lesion_image.name, image.shape[0], image.shape[1], center, sigma))
 
     plt.show()
+
 
